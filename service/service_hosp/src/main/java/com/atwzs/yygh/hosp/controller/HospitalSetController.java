@@ -26,6 +26,7 @@ import java.util.Random;
 @Api(tags = "医院设置管理")
 @RestController
 @RequestMapping("/admin/hosp/hospitalSet")
+@CrossOrigin
 public class HospitalSetController {
 
     //注入Service
@@ -84,14 +85,18 @@ public class HospitalSetController {
         Page<HospitalSet> page = new Page<>(current, limit);
         //构建条件
         QueryWrapper<HospitalSet> wrapper = new QueryWrapper<>();
-        String hosname = hospitalSetQueryVo.getHosname();    //医院名称
-        String hoscode = hospitalSetQueryVo.getHoscode();    //医院编号
-        //判断
-        if (!StringUtils.isEmpty(hosname)) {
-            wrapper.like("hosname", hosname);
-        }
-        if (!StringUtils.isEmpty(hoscode)) {
-            wrapper.eq("hoscode", hoscode);
+        if (hospitalSetQueryVo != null) {
+            String hosname = hospitalSetQueryVo.getHosname();    //医院名称
+            String hoscode = hospitalSetQueryVo.getHoscode();    //医院编号
+            //判断
+            if (!StringUtils.isEmpty(hosname)) {
+                wrapper.like("hosname", hosname);
+            }
+            if (!StringUtils.isEmpty(hoscode)) {
+                wrapper.eq("hoscode", hoscode);
+            }
+        } else {
+            wrapper = null;
         }
         //调用方法，实现分页查询
         Page<HospitalSet> pageHospitalSet = hospitalSetService.page(page, wrapper);
@@ -118,6 +123,13 @@ public class HospitalSetController {
     //根据id获取医院设置
     @GetMapping("getHospSet/{id}")
     public Result<HospitalSet> getHospSet(@PathVariable Long id) {
+        /*try {
+            //模拟异常
+            int a = 10 / 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new YyghException("失败", 201);
+        }*/
         HospitalSet hospitalSet = hospitalSetService.getById(id);
         return Result.ok(hospitalSet);
     }
@@ -137,6 +149,29 @@ public class HospitalSetController {
     @DeleteMapping("batchRemove")
     public Result<Object> batchRemoveHospitalSet(@RequestBody List<Long> ids) {
         hospitalSetService.removeByIds(ids);
+        return Result.ok();
+    }
+
+    //医院设置锁定和解锁
+    @PutMapping("lockHospitalSet/{id}/{status}")
+    public Result<Object> lockHospitalSet(@PathVariable Long id, @PathVariable Integer status) {
+        //根据id查询医院设置信息
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        //设置医院状态
+        hospitalSet.setStatus(status);
+        //调用方法
+        hospitalSetService.updateById(hospitalSet);
+        return Result.ok();
+    }
+
+    //发送签名key
+    @PutMapping("sendKey/{id}")
+    public Result<Object> lockHospitalSet(@PathVariable Long id) {
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        String signKey = hospitalSet.getSignKey();
+        String hoscode = hospitalSet.getHoscode();
+        String hosname = hospitalSet.getHosname();
+        //TODO 发送短信
         return Result.ok();
     }
 }

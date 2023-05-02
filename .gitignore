@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+[user]
+        name = 王志生
+        email = 3517139394@qq.com
+[core]
+                excludesfile = C:/Users/王志生/git.ignore
+
+

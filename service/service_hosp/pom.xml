@@ -12,6 +12,11 @@
     <artifactId>service_hosp</artifactId>
     <dependencies>
         <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.atwzs</groupId>
             <artifactId>model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
