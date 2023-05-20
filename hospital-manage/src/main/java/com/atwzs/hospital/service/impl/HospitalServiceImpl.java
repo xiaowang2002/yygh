@@ -62,7 +62,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         Map<String, Object> resultMap = new HashMap<>();
         int availableNumber = schedule.getAvailableNumber().intValue() - 1;
-        if(availableNumber > 0) {
+        if(availableNumber >= 0) {
             schedule.setAvailableNumber(availableNumber);
             hospitalMapper.updateById(schedule);
 
